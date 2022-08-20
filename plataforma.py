@@ -18,6 +18,7 @@ player_sprite = Sprite('sprites/cyborg/Cyborg_run.png', 6)
 
 # ground
 rect_ground = (screen_size[0]//2 - 320, 288, 640, 900)
+obstaculo = (screen_size[0]//2 + 100, 250, 640, 900)
 
 while True:
     if player_sprite.falling and not player_sprite.jumping: 
@@ -48,12 +49,14 @@ while True:
                 player_sprite.aceleration_X = 0
 
     # colisao com o chao
-    player_sprite.falling = player_sprite.collide(rect_ground)
+    player_sprite.falling = player_sprite.collide((rect_ground, obstaculo))
 
     # desenhando itens na tela
     screen.fill(BG)
     pygame.draw.rect(screen, (119, 255, 49), rect_ground) # chao kkkkkkk
+    pygame.draw.rect(screen, (119, 255, 49), obstaculo)
     player_sprite.update(screen)
+    
     pygame.display.update()
-    clock.tick(90)
+    clock.tick(60)
 

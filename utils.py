@@ -2,7 +2,7 @@ import pygame
 import cv2
 
 
-class Sprite(object):
+class Sprite1(object):
     def __init__(self, image_path, qtd_sprites, len_sprite = (100, 100), pos = (100, 100), heigher_jump = 20):
         self.spritesheet = pygame.image.load(image_path).convert()
         self.h, self.w, self.c = cv2.imread(image_path).shape
@@ -58,7 +58,40 @@ class Sprite(object):
             return False
         return True
     
-    def collide(self, rect):
-        if self.sprite_rect.colliderect(rect):
-            return False
+    def collide(self, rects):
+        for rect in rects:
+            if self.sprite_rect.colliderect(rect):
+                return False
         return True
+
+class Sprite(pygame.sprite.Sprite):
+    def __init__(self, pos, color = None, *args, path = None, tam = ()):
+        super().__init__(*args)
+        if path != None:
+            self.spritesheet = pygame.image.load(path).convert()
+            self.image = pygame.transform.scale(self.__get_sprite(0, 0, 48, 48), (120, 120))
+        else:
+            self.image = pygame.Surface(tam)
+            self.image.fill(color)
+        self.rect = self.image.get_rect(center=pos)
+        self.pos = pygame.Vector2(pos)
+
+    def update(self):
+        self.rect.center = self.pos
+    
+    def __get_sprites(self):
+        sprite_list = []
+        x = 0
+        sprite_w = sprite_w_aux = 288//6
+        for i in range(6):
+            sp = pygame.transform.scale(self.__get_sprite(x, 0, sprite_w - x, 48), (100, 100))
+            sprite_list.append(sp)
+            x = sprite_w
+            sprite_w += sprite_w_aux
+        return sprite_list
+
+    def __get_sprite(self, x, y, w, h):
+        sprite = pygame.Surface((w, h))
+        sprite.set_colorkey((0, 0, 0))
+        sprite.blit(self.spritesheet, (0, 0), (x, y, w, h))
+        return sprite
